@@ -8,6 +8,9 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+
 public class SimpleServer extends AbstractServer {
 	private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
 
@@ -48,19 +51,33 @@ public class SimpleServer extends AbstractServer {
 				client.sendToClient(message);
 			}
 			else if(request.startsWith("send Submitters IDs")){
-				//add code here to send submitters IDs to client
+				message.setMessage("314983040, 207944414");
+				client.sendToClient(message);
 			}
 			else if (request.startsWith("send Submitters")){
-				//add code here to send submitters names to client
+				message.setMessage("Noy, Shahar");
+				client.sendToClient(message);
 			}
 			else if (request.equals("what day it is?")) {
-				//add code here to send the date to client
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+				LocalDateTime now = LocalDateTime.now();
+				message.setMessage(dtf.format(now));
+				client.sendToClient(message);
 			}
 			else if (request.startsWith("add")){
-				//add code here to sum 2 numbers received in the message and send result back to client
-				//(use substring method as shown above)
-				//message format: "add n+m"
+				message.setData(request.substring(4));
+				String f = message.getData();
+				String[] b = f.split("[+]");
+				int c = Integer.parseInt(b[0]);
+				int d = Integer.parseInt(b[1]);
+
+				message.setMessage(String.valueOf(c+d));
+				client.sendToClient(message);
+
 			}else{
+				message.setData(request.substring(0));
+				message.setMessage(message.getData());
+				sendToAllClients(message);
 				//add code here to send received message to all clients.
 				//The string we received in the message is the message we will send back to all clients subscribed.
 				//Example:
